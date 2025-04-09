@@ -1,117 +1,42 @@
-<!DOCTYPE html>
+{% extends 'layouts/base.html' %}
 {% load static %}
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AskQuokka</title>
-<!--    <link rel="icon" href="static/img/logo-wout-bg.png" type="image/png">-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link rel="stylesheet" href="static/css/styles.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="{% static '/img/logo-wout-bg.png' %}" alt="avatar" class="me-2" height="50">
-                AskQuokka
-            </a>
+{% block content %}
+    <div class="d-flex align-items-center gap-3">
+        <h2>Последние вопросы</h2>
+        <a href="#">Интересные вопросы</a>
+    </div>
 
-            <form class="d-flex" role="search">
-                <input class="form-control" type="search" placeholder="Поиск" aria-label="Search">
-            </form>
-            <a href="/ask" class="btn btn-light ms-auto me-3 text-success fw-semibold">Задать вопрос</a>
-
-            <ul class="navbar-nav">
-              <!-- Пример для неавторизованного -->
-  <!--            <li class="nav-item"><a class="nav-link" href="#">Вход</a></li>-->
-  <!--            <li class="nav-item"><a class="nav-link" href="#">Регистрация</a></li>-->
-
-              <!-- Пример для авторизованного -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                        <img src="../static/img/snake.jpg" alt="avatar" class="rounded-circle me-2" width="32" height="32">
-                        Snake98
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Профиль</a></li>
-                        <li><a class="dropdown-item" href="#">Настройки</a></li>
-                        <li><a class="dropdown-item" href="#">Выход</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="d-flex align-items-center gap-3">
-                    <h2>Последние вопросы</h2>
-                    <a href="#">Интересные вопросы</a>
-                </div>
-
-                {% for question in questions %}
-                    <div class="card question-card">
-                        <div class="card-body d-flex">
-                            <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
-                            <div class="flex-grow-1">
-                                <h5 class="card-title"><a href="#">{{ question.title }}</a></h5>
-                                <p class="card-text">{{ question.text }}</p>
-                                <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <a href="#" class="badge bg-success">Django</a>
-                                        <a href="#" class="badge bg-success">ORM</a>
-                                    </div>
-                                    <div>
-                                        <button class="btn btn-sm btn-outline-success me-2">👍 12</button>
-                                        <span class="text-muted">5 ответов</span>
-                                    </div>
-                                </div>
-                            </div>
+    {% for question in questions %}
+        <div class="card question-card">
+            <div class="card-body d-flex">
+                <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
+                <div class="flex-grow-1">
+                    <h5 class="card-title"><a href="#">{{ question.title }}</a></h5>
+                    <p class="card-text">{{ question.text }}</p>
+                    <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="#" class="badge bg-success">Django</a>
+                            <a href="#" class="badge bg-success">ORM</a>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-success me-2">👍 12</button>
+                            <span class="text-muted">5 ответов</span>
                         </div>
                     </div>
-                {% endfor %}
-
-                <nav>
-                    <ul class="pagination justify-content-center mt-4">
-                        <li class="page-item disabled"><a class="page-link" href="#">Пред</a></li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                        <li class="page-item"><a class="page-link" href="#">След</a></li>
-                    </ul>
-                </nav>
-
-            </div>
-
-            <div class="col-md-4">
-                <div class="sidebar mb-4">
-                    <h5>Популярные теги</h5>
-                    <a href="#" class="badge bg-success">Python</a>
-                    <a href="#" class="badge bg-success">HTML</a>
-                    <a href="#" class="badge bg-success">Django</a>
-                    <a href="#" class="badge bg-success">MySQL</a>
-                    <a href="#" class="badge bg-success">CSS</a>
-                    <a href="#" class="badge bg-success">Algorithms</a>
-                    <a href="#" class="badge bg-success">TechnoPark</a>
-                    <a href="#" class="badge bg-success">FireFox</a>
-                    <a href="#" class="badge bg-success">1C</a>
-                </div>
-                <div class="sidebar">
-                    <h5>Топ-участники</h5>
-                    <ul class="list-unstyled mb-0">
-                        <li><a href="#" class="text-decoration-none">🐨 QuokkaFan52</a></li>
-                        <li><a href="#" class="text-decoration-none">🦘 KangarooDev</a></li>
-                        <li><a href="#" class="text-decoration-none">🐍 PyGenius</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-</body>
-</html>
+    {% endfor %}
+    <nav>
+        <ul class="pagination justify-content-center mt-4">
+            <li class="page-item disabled"><a class="page-link" href="#">Пред</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item"><a class="page-link" href="#">След</a></li>
+        </ul>
+    </nav>
+{% endblock %}
