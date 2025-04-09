@@ -14,3 +14,6 @@ for i in range(1,30):
 # Create your views here.
 def index(request):
     return render(request, 'index.html', context={'questions': questions})
+
+def hot(request):
+    return render(request, 'hot.html', context={'questions': questions})
