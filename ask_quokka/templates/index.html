@@ -51,72 +51,28 @@
                     <a href="#">Интересные вопросы</a>
                 </div>
 
-                <div class="card question-card">
-                    <div class="card-body d-flex">
-                        <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
-                        <div class="flex-grow-1">
-                            <h5 class="card-title"><a href="#">{{ questions.0.title }}</a></h5>
-                            <p class="card-text">{{ questions.0.text }}</p>
-                            <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <a href="#" class="badge bg-success">Django</a>
-                                    <a href="#" class="badge bg-success">ORM</a>
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-outline-success me-2">👍 12</button>
-                                    <span class="text-muted">5 ответов</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card question-card">
-                    <div class="card-body d-flex">
-                        <img src="../static/img/quokka-ava.jpg" alt="avatar" class="rounded-circle me-3" width="50" height="50">
-                        <div class="flex-grow-1">
-                            <h5 class="card-title"><a href="#">Как работает шаблонизация Django?</a></h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-                            <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <a href="#" class="badge bg-success">Django</a>
-                                    <a href="#" class="badge bg-success">ORM</a>
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-outline-success me-2">👍 12</button>
-                                    <span class="text-muted">5 ответов</span>
+                {% for question in questions %}
+                    <div class="card question-card">
+                        <div class="card-body d-flex">
+                            <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title"><a href="#">{{ question.title }}</a></h5>
+                                <p class="card-text">{{ question.text }}</p>
+                                <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <a href="#" class="badge bg-success">Django</a>
+                                        <a href="#" class="badge bg-success">ORM</a>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-success me-2">👍 12</button>
+                                        <span class="text-muted">5 ответов</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="card question-card">
-                    <div class="card-body d-flex">
-                        <img src="../static/img/quokka-ava.jpg" alt="avatar" class="rounded-circle me-3" width="50" height="50">
-                        <div class="flex-grow-1">
-                            <h5 class="card-title"><a href="#">Как работает шаблонизация Django?</a></h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-                            <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <a href="#" class="badge bg-success">Django</a>
-                                    <a href="#" class="badge bg-success">ORM</a>
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-outline-success me-2">👍 12</button>
-                                    <span class="text-muted">5 ответов</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
 
                 <nav>
                     <ul class="pagination justify-content-center mt-4">
