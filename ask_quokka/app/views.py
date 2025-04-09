@@ -32,3 +32,7 @@ def tag(request, tag_name):
                                                 'item': tag_name})
 def question(request, question_id):
     return render(request, 'question.html', context={'question': questions[question_id], 'tags': tags})
+
+def ask(request):
+    return render(request, 'ask.html', context={'questions': questions,
+                                                  'tags': tags})
