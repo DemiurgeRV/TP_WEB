@@ -1,0 +1,34 @@
+/* Зеленая палитра AskQuokka */
+:root {
+    --askquokka-green: #28a745;
+    --askquokka-light: #e6f4ea;
+    --askquokka-dark: #1e7e34;
+}
+
+a {
+    text-decoration: none;
+}
+
+.navbar {
+    background-color: var(--askquokka-green);
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .form-control {
+    color: white;
+}
+
+.navbar .form-control::placeholder {
+    color: #c8e6c9;
+}
+
+.question-card {
+    margin-bottom: 20px;
+}
+
+.sidebar {
+    background-color: var(--askquokka-light);
+    padding: 15px;
+    border-radius: 10px;
+}
