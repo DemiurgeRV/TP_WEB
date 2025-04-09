@@ -53,15 +53,9 @@
             <div class="col-md-4">
                 <div class="sidebar mb-4">
                     <h5>Популярные теги</h5>
-                    <a href="#" class="badge bg-success">Python</a>
-                    <a href="#" class="badge bg-success">HTML</a>
-                    <a href="#" class="badge bg-success">Django</a>
-                    <a href="#" class="badge bg-success">MySQL</a>
-                    <a href="#" class="badge bg-success">CSS</a>
-                    <a href="#" class="badge bg-success">Algorithms</a>
-                    <a href="#" class="badge bg-success">TechnoPark</a>
-                    <a href="#" class="badge bg-success">FireFox</a>
-                    <a href="#" class="badge bg-success">1C</a>
+                    {% for tag in tags %}
+                        <a href="{% url 'tag' tag.name %}" class="badge bg-success">{{ tag.name }}</a>
+                    {% endfor %}
                 </div>
                 <div class="sidebar">
                     <h5>Топ-участники</h5>
