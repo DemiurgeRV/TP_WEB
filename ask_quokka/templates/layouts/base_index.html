@@ -11,7 +11,7 @@
             <div class="card-body d-flex">
                 <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
                 <div class="flex-grow-1">
-                    <h5 class="card-title"><a href="#">{{ question.title }}</a></h5>
+                    <h5 class="card-title"><a href="{% url 'question' question.id %}">{{ question.title }}</a></h5>
                     <p class="card-text">{{ question.text }}</p>
                     <p class="mb-1 text-muted">от quokkaFan52 | 2 часа назад</p>
                     <div class="d-flex justify-content-between">

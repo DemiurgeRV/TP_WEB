@@ -30,3 +30,5 @@ def hot(request):
 def tag(request, tag_name):
     return render(request, 'tag.html', context={'questions': questions, 'tags': tags,
                                                 'item': tag_name})
+def question(request, question_id):
+    return render(request, 'question.html', context={'question': questions[question_id], 'tags': tags})
