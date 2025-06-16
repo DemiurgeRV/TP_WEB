@@ -42,3 +42,18 @@ class QuestionForm(forms.Form):
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
+
+class ProfileSettingsForm(forms.Form):
+    nickname = forms.CharField(label='Никнейм', max_length=150)
+    email = forms.EmailField(label='Почта')
+    avatar = forms.ImageField(label='Аватар', required=False)
+    password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False)
+    password_confirm = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password')
+        p2 = cleaned_data.get('password_confirm')
+        if p1 and p1 != p2:
+            self.add_error('password_confirm', 'Пароли не совпадают')
+

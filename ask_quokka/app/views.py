@@ -5,8 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
+from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import redirect
-from .forms import CustomUserCreationForm, QuestionForm, AnswerForm
+from .forms import CustomUserCreationForm, QuestionForm, AnswerForm, ProfileSettingsForm
 from .utils import paginate
 from .models import Question, Tag, Answer, Profile
 
@@ -114,22 +115,28 @@ def logout_view(request):
 
 @login_required
 def settings(request):
-    profile = request.user.profile
+    user = request.user
+    profile = user.profile
+
     if request.method == 'POST':
-        nickname = request.POST['nickname']
-        email = request.POST['email']
-        avatar = request.FILES.get('avatar')
-        password = request.POST.get('password')
-        confirm = request.POST.get('password_confirm')
+        form = ProfileSettingsForm(request.POST, request.FILES)
+        if form.is_valid():
+            user.email = form.cleaned_data['email']
+            profile.avatar = form.cleaned_data.get('avatar') or profile.avatar
+            profile.save()
+            user.save()
 
-        user = request.user
-        user.email = email
-        if password and password == confirm:
-            user.set_password(password)
-        user.save()
+            password = form.cleaned_data['password']
+            if password:
+                user.set_password(password)
+                user.save()
+                update_session_auth_hash(request, user)  # 🔒 сохраняем сессию
 
-        profile.avatar = avatar if avatar else profile.avatar
-        profile.save()
+            return redirect('settings')
+    else:
+        form = ProfileSettingsForm(initial={
+            'nickname': user.username,
+            'email': user.email,
+        })
 
-        return redirect('settings')
-    return render(request, 'settings.html')
+    return render(request, 'settings.html', {'form': form, 'tags': Tag.objects.all()})
