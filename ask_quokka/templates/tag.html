@@ -1,5 +1,5 @@
 {% extends 'layouts/base_index.html' %}
 {% block title %}
-    <h2>Вопросы по тегу: {{ item }} </h2>
+    <h2>Вопросы по тегу: {{ tag.name }} </h2>
     <a href="{% url 'index' %}">Последние вопросы</a>
 {% endblock %}
