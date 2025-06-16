@@ -36,3 +36,6 @@ def question(request, question_id):
 def ask(request):
     return render(request, 'ask.html', context={'questions': questions,
                                                   'tags': tags})
+
+def signup(request):
+    return render(request, 'signup.html')
