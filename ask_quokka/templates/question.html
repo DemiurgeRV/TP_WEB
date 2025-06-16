@@ -5,11 +5,14 @@
         <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="100" height="100">
         <div class="flex-grow-1">
             <h2>{{ question.title }}</h2>
-            <p class="text-muted">Задан пользователем <strong>quokkaFan52</strong> • 2 часа назад</p>
+            <p class="text-muted">
+                Задан пользователем <strong>{{ question.author.user.username }}</strong> • {{ question.created_at|timesince }} назад
+            </p>
             <p>{{ question.text }}</p>
             <div class="mb-2">
-                <a href="#" class="badge bg-success">Django</a>
-                <a href="#" class="badge bg-success">Python</a>
+                {% for tag in question.tags.all %}
+                    <a href="{% url 'tag' tag.name %}" class="badge bg-success">{{ tag.name }}</a>
+                {% endfor %}
             </div>
             <div>
                 <button class="btn btn-sm btn-outline-success me-2">👍 164</button>
@@ -21,26 +24,25 @@
     <hr>
 
     <h4 class="mb-3">Ответы</h4>
-    <div class="card mb-3">
-        <div class="card-body d-flex">
-            <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between">
-                    <h6 class="mb-1">pyGenius</h6>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="checkAnswer1">
-                        <label class="form-check-label" for="checkAnswer1">
-                            Правильный ответ
-                        </label>
+    {% for answer in page.object_list %}
+        <div class="card mb-3">
+            <div class="card-body d-flex">
+                <img src="{% static '/img/quokka-ava.jpg' %}" alt="avatar" class="rounded-circle me-3" width="50" height="50">
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="mb-1">{{ answer.author.user.username }}</h6>
+                        {% if answer.is_correct %}
+                            <span class="badge bg-success">Правильный ответ</span>
+                        {% endif %}
                     </div>
+                    <p>{{ answer.text }}</p>
+                    <button class="btn btn-sm btn-outline-success">👍 {{ answer.rating }}</button>
                 </div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                    ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                    laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <button class="btn btn-sm btn-outline-success">👍 7</button>
             </div>
         </div>
-    </div>
+    {% empty %}
+        <p>Ответов пока нет. Будьте первым!</p>
+    {% endfor %}
 
     {% include 'partials/pagination.html' %}
 
@@ -60,8 +62,9 @@
 
     <h4 class="mb-3">Ваш ответ</h4>
     <form method="post">
+        {% csrf_token %}
         <div class="mb-3">
-            <textarea class="form-control" rows="5" placeholder="Напишите ваш ответ здесь..."></textarea>
+            <textarea class="form-control" name="text" rows="5" placeholder="Напишите ваш ответ здесь..."></textarea>
         </div>
         <button type="submit" class="btn btn-success mb-3">Отправить</button>
     </form>

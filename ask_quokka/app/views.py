@@ -44,8 +44,18 @@ from .models import Question, Tag, Answer
 # def tag(request, tag_name):
 #     page = paginate(questions, request)
 #     return render(request, 'tag.html', {'page': page, 'tags': tags, 'item': tag_name})
+
 # def question(request, question_id):
 #     return render(request, 'question.html', context={'question': questions[question_id], 'tags': tags})
+
+# def question(request, question_id):
+#     question = get_object_or_404(Question, id=question_id)
+#     answers = Answer.objects.filter(question=question).order_by('-created_at')  # или другой порядок
+#     page = paginate(answers, request)
+#     return render(request, 'question.html', {
+#         'question': question,
+#         'page': page
+#     })
 
 def index(request):
     questions = Question.objects.new()
@@ -68,19 +78,26 @@ def tag(request, tag_name):
         'page': page,
         'tag': tag,
         'item': tag.name,
-        'tags': all_tags,  # <-- добавлено
+        'tags': all_tags,
     })
+
 
 def question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
-    answers = Answer.objects.filter(question=question).order_by('-created_at')  # или другой порядок
+    answers = question.answers.all().order_by('-created_at')
     page = paginate(answers, request)
+    all_tags = Tag.objects.all()
+
     return render(request, 'question.html', {
         'question': question,
-        'page': page
+        'page': page,
+        'tags': all_tags,
+        'question_tags': question.tags.all(),
     })
 
 def ask(request):
+    questions = tag.questions.all()
+    tags = Tag.objects.all()
     return render(request, 'ask.html', context={'questions': questions,
                                                   'tags': tags})
 
