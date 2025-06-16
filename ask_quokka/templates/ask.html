@@ -1,34 +1,21 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% block content %}
-    <h2 class="mb-4">Задать вопрос</h2>
-    <form>
+<h2 class="mb-4">Задать вопрос</h2>
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
         <div class="mb-3">
-            <label for="title" class="form-label">Вопрос</label>
-            <input type="text" class="form-control is-invalid" id="title" name="title" maxlength="150" placeholder="Например, Как работает шаблонизация Django?">
-            <!-- Подсказка -->
-            <div class="form-text">Кратко и ясно сформулируйте суть вопроса (до 150 символов).</div>
-            <!-- Ошибка -->
-            <div class="invalid-feedback">
-                Это поле обязательно.
-            </div>
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
         </div>
-
-        <div class="mb-3">
-            <label for="body" class="form-label">Подробное описание</label>
-            <textarea class="form-control" id="body" name="body" rows="6" maxlength="3000" placeholder="Опишите, что вы пробовали, и что не работает..."></textarea>
-            <div class="form-text">Максимум 3000 символов.</div>
-        </div>
-
-        <div class="mb-3">
-            <label for="tags" class="form-label">Теги</label>
-            <input type="text" class="form-control is-invalid" id="tags" name="tags" maxlength="100" placeholder="Например: python django orm">
-            <div class="form-text">Укажите 1–5 тегов через пробел. Например: <i>python django orm</i></div>
-            <div class="invalid-feedback">
-                Укажите хотя бы один тег.
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-success mb-3">Опубликовать вопрос</button>
-    </form>
+    {% endfor %}
+    <button type="submit" class="btn btn-success mb-3">Опубликовать вопрос</button>
+</form>
 {% endblock %}

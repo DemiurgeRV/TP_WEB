@@ -1,61 +1,14 @@
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from .forms import CustomUserCreationForm, QuestionForm, AnswerForm
 from .utils import paginate
-from .models import Question, Tag, Answer
-
-# questions = []
-# for i in range(1,30):
-#     questions.append({
-#         'title': 'Как работает шаблонизация Django? ' + str(i),
-#         'id': i,
-#         'text':  str(i) + ''' Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-#                               sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-#                               Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...'''
-#     })
-#
-# tags = []
-# for i in range(1,16):
-#     tags.append({
-#         'name': 'Tag ' + str(i),
-#         'id': i,
-#     })
-
-# Create your views here.
-# def index(request):
-#     return render(request, 'index.html', context={'questions': questions,
-#                                                   'tags': tags})
-#
-# def hot(request):
-#     return render(request, 'hot.html', context={'questions': questions,
-#                                                 'tags': tags})
-#
-# def tag(request, tag_name):
-#     return render(request, 'tag.html', context={'questions': questions, 'tags': tags,
-#                                                 'item': tag_name})
-
-# def index(request):
-#     page = paginate(questions, request)
-#     return render(request, 'index.html', {'page': page, 'tags': tags})
-#
-# def hot(request):
-#     page = paginate(questions, request)
-#     return render(request, 'hot.html', {'page': page, 'tags': tags})
-
-# def tag(request, tag_name):
-#     page = paginate(questions, request)
-#     return render(request, 'tag.html', {'page': page, 'tags': tags, 'item': tag_name})
-
-# def question(request, question_id):
-#     return render(request, 'question.html', context={'question': questions[question_id], 'tags': tags})
-
-# def question(request, question_id):
-#     question = get_object_or_404(Question, id=question_id)
-#     answers = Answer.objects.filter(question=question).order_by('-created_at')  # или другой порядок
-#     page = paginate(answers, request)
-#     return render(request, 'question.html', {
-#         'question': question,
-#         'page': page
-#     })
+from .models import Question, Tag, Answer, Profile
 
 def index(request):
     questions = Question.objects.new()
@@ -82,30 +35,101 @@ def tag(request, tag_name):
     })
 
 
+@login_required
 def question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     answers = question.answers.all().order_by('-created_at')
-    page = paginate(answers, request)
-    all_tags = Tag.objects.all()
+    form = AnswerForm()
 
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = Answer.objects.create(
+                text=form.cleaned_data['text'],
+                author=request.user.profile,
+                question=question
+            )
+            return redirect(f"{question.get_url()}#answer-{answer.id}")
+
+    page = paginate(answers, request)
     return render(request, 'question.html', {
         'question': question,
         'page': page,
-        'tags': all_tags,
-        'question_tags': question.tags.all(),
+        'form': form,
+        'tags': Tag.objects.all(),
     })
 
+@login_required
 def ask(request):
-    questions = tag.questions.all()
-    tags = Tag.objects.all()
-    return render(request, 'ask.html', context={'questions': questions,
-                                                  'tags': tags})
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            profile = request.user.profile
+            question = Question.objects.create(
+                title=form.cleaned_data['title'],
+                text=form.cleaned_data['text'],
+                author=profile
+            )
+            tags = form.cleaned_data['tags'].split()
+            for tag_name in tags:
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                question.tags.add(tag)
+            return redirect(question.get_url())
+    else:
+        form = QuestionForm()
+    return render(request, 'ask.html', {'form': form, 'tags': Tag.objects.all()})
 
 def signup(request):
-    return render(request, 'signup.html')
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save()
+            avatar = form.cleaned_data.get('avatar')
+            nickname = form.cleaned_data.get('nickname')
+            Profile.objects.create(user=user, avatar=avatar)
+            auth_login(request, user)
+            return redirect('index')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'signup.html', {'form': form})
 
-def login(request):
-    return render(request, 'login.html')
 
+def login_view(request):
+    next_url = request.GET.get('continue', '/')
+    error = ''
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return HttpResponseRedirect(next_url)
+        else:
+            error = 'Неверный логин или пароль'
+    return render(request, 'login.html', {'error': error})
+
+def logout_view(request):
+    logout(request)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required
 def settings(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        nickname = request.POST['nickname']
+        email = request.POST['email']
+        avatar = request.FILES.get('avatar')
+        password = request.POST.get('password')
+        confirm = request.POST.get('password_confirm')
+
+        user = request.user
+        user.email = email
+        if password and password == confirm:
+            user.set_password(password)
+        user.save()
+
+        profile.avatar = avatar if avatar else profile.avatar
+        profile.save()
+
+        return redirect('settings')
     return render(request, 'settings.html')

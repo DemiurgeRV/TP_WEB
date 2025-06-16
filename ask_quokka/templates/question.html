@@ -46,26 +46,19 @@
 
     {% include 'partials/pagination.html' %}
 
-<!--    <nav>-->
-<!--        <ul class="pagination justify-content-center mt-4">-->
-<!--            <li class="page-item disabled"><a class="page-link" href="#">Пред</a></li>-->
-<!--            <li class="page-item active"><a class="page-link" href="#">1</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-<!--            <li class="page-item disabled"><a class="page-link" href="#">...</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">5</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">След</a></li>-->
-<!--        </ul>-->
-<!--    </nav>-->
-
     <hr>
 
     <h4 class="mb-3">Ваш ответ</h4>
     <form method="post">
         {% csrf_token %}
+        {{ form.non_field_errors }}
         <div class="mb-3">
-            <textarea class="form-control" name="text" rows="5" placeholder="Напишите ваш ответ здесь..."></textarea>
+            {{ form.text }}
+            {% for error in form.text.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
         </div>
         <button type="submit" class="btn btn-success mb-3">Отправить</button>
     </form>
+
 {% endblock %}

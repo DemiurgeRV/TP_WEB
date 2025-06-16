@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <img src="{% static '/img/logo-wout-bg.png' %}" alt="avatar" class="me-2" height="50">
                 AskQuokka
             </a>
@@ -23,23 +23,30 @@
             <a href="{% url 'ask' %}" class="btn btn-light ms-auto me-3 text-success fw-semibold">Задать вопрос</a>
 
             <ul class="navbar-nav">
-              <!-- Пример для неавторизованного -->
-  <!--            <li class="nav-item"><a class="nav-link" href="#">Вход</a></li>-->
-  <!--            <li class="nav-item"><a class="nav-link" href="#">Регистрация</a></li>-->
-
-              <!-- Пример для авторизованного -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                        <img src="{% static '/img/snake.jpg' %}" alt="avatar" class="rounded-circle me-2" width="32" height="32">
-                        Snake98
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Профиль</a></li>
-                        <li><a class="dropdown-item" href="#">Настройки</a></li>
-                        <li><a class="dropdown-item" href="#">Выход</a></li>
-                    </ul>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            {% if user.is_authenticated %}
+                                {% if user.profile.avatar and user.profile.avatar.name %}
+                                    <img src="{{ user.profile.avatar.url }}" alt="avatar" class="rounded-circle me-2" width="32" height="32">
+                                {% else %}
+                                    <img src="{% static 'img/default.jpg' %}" alt="avatar" class="rounded-circle me-2" width="32" height="32">
+                                {% endif %}
+                            {% endif %}
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Профиль</a></li>
+                            <li><a class="dropdown-item" href="{% url 'settings' %}">Настройки</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выход</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Регистрация</a></li>
+                {% endif %}
             </ul>
+
         </div>
     </nav>
 
